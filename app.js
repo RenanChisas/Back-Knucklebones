@@ -8,7 +8,7 @@ const http = require("http");
 const app = express();
 const server = http.createServer(app);
 
-const URL = process.env.UR_FRONT;
+const URL = process.env.URL_FRONT;
 const allowedOrigins = [URL];
 
 const io = socketio(server, {
