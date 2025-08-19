@@ -37,12 +37,8 @@ class KnucklebonesRooms {
     const index = this.rooms.findIndex((room) => room.roomId === roomId);
 
     if (index !== -1) {
-      const room = this.rooms[index];
-      if (typeof room.knucklebones.destroy === "function") {
-        room.knucklebones.destroy();
-      }
-
       this.rooms.splice(index, 1);
+      console.log(`Room ${roomId} removed safely.`);
     }
   }
 }
