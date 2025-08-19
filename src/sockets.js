@@ -16,6 +16,7 @@ module.exports = function (io) {
         if (playersInRoom.hasOwnProperty(socket.room)) {
           delete playersInRoom[socket.room];
           KnucklebonesRooms.removeRoom(socket.room);
+          io.emit("receive-listroom", KnucklebonesRooms.getALL());
         }
         io.to(socket.room).emit("receive-disconnect", socket.id);
       }
@@ -59,13 +60,16 @@ module.exports = function (io) {
         if (!roomInstance) {
           return;
         }
+
         if (roomInstance.knucklebones.players.length > 1) {
           roomInstance.free = false;
         }
+
         if (roomInstance.knucklebones.players.length <= 2) {
           setTimeout(() => {
             io.to(room).emit("receiveinfo-players", playersInRoom[room]);
           }, 50);
+          io.emit("receive-listroom", KnucklebonesRooms.getALL());
           numberDice = Math.floor(Math.random() * 6) + 1;
           roomInstance.knucklebones.setDice(numberDice);
           setTimeout(() => {
@@ -158,7 +162,11 @@ module.exports = function (io) {
 
       socket.to(room).emit("receive-sumtable", returnSum);
     });
-    //1
+
+    socket.on("request-listroom", () => {
+      socket.emit("receive-listroom", KnucklebonesRooms.getALL());
+    });
+
     socket.on("adddice-room", async (room, line, dice, player) => {
       if (!room) return;
       const roomInstance = await KnucklebonesRooms.getRoom(room);
